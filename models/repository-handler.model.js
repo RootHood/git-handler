@@ -7,7 +7,7 @@ export class RepositoryHandler {
   repositories = [];
 
   constructor() {
-    this.repositories = getData() ?? [];
+    this.repositories = getData();
   }
 
   addRepository = async () => {
@@ -21,8 +21,19 @@ export class RepositoryHandler {
     persistData(this.repositories);
   }
 
-  removeRepository = (repository) => {
-    const index = this.repositories.findIndex(repository);
-    if (index !== -1) this.repositories.splice(index, 1);
+  removeRepository = (index) => {
+    this.repositories.splice(index, 1);
+    persistData(this.repositories);
+  }
+
+  printRepositories = () => {
+    if (this.repositories.length === 0) {
+      console.log('No repositories found, press option 3 to add.');
+      return;
+    }
+    this.repositories.forEach((repo, index) => {
+      const i = index + 1;
+      console.log(`  ${ i }. ${ repo.name }`)
+    });
   }
 }

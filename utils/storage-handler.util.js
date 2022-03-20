@@ -1,14 +1,14 @@
-import * as fs from 'fs'
+import { writeFileSync, existsSync, readFileSync } from 'fs'
 
 const path = './storage/repos.json';
 
 export const persistData = (data) => {
   const dataJSON = JSON.stringify(data);
-  fs.writeFileSync(path, dataJSON);
+  writeFileSync(path, dataJSON);
 }
 
 export const getData = () => {
-  if (!fs.existsSync(path)) return;
-  const data = fs.readFileSync(path, { encoding: 'utf-8' });
+  if (!existsSync(path)) return [];
+  const data = readFileSync(path, { encoding: 'utf-8' });
   return JSON.parse(data);
 }
