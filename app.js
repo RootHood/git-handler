@@ -1,7 +1,9 @@
-import {confirmDialog, mainMenu} from "./utils/menus.js";
+import {mainMenu} from "./utils/menus.util.js";
+import {RepositoryHandler} from "./models/repository-handler.model.js";
 
 
 const main = async() => {
+  const repositoryHandler = new RepositoryHandler();
   let optionSelected;
   do {
     optionSelected = await mainMenu();
@@ -13,7 +15,7 @@ const main = async() => {
         // TODO: View all Repositories
       break;
       case 3:
-        // TODO: Add repository
+        await repositoryHandler.addRepository();
       break;
       case 4:
         // TODO: Remove repository

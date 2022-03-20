@@ -33,3 +33,21 @@ export const confirmDialog = async (message) => {
   const { ok } = await inquirer.prompt(menu);
   return ok;
 }
+
+export const readInput = async (message) => {
+  const menu = [
+    {
+      type: 'input',
+      name: 'value',
+      message,
+      validate(value) {
+        if (value.length === 0) {
+          return 'Please insert value';
+        }
+        return true;
+      }
+    }
+  ];
+  const { value } = await inquirer.prompt(menu);
+  return value;
+}
