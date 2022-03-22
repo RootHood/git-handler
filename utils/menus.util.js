@@ -1,24 +1,25 @@
 import inquirer from 'inquirer'
 
-const mainMenuChoices = ['View all repos', 'Change Branch name',  'Add repository', 'Remove repository', 'Exit'];
+const mainMenuChoices = ['View all Repositories', 'Manage Repositories',  'Add repository', 'Remove repository', 'Exit'];
+const manageMenuChoices = ['Check status', 'Create branch', 'Change branch', 'Delete branch' , 'Exit']
 const mainMenuHeader =
   `*************************************************
 ***************** ${ 'Git-Handler' } *******************
 *************************************************`
 
-export const mainMenu = async () => {
+export const menuMain = async () => {
   console.clear();
   console.log(mainMenuHeader);
   const choices = getChoices(mainMenuChoices);
   const menu = getMenuQuestions(
     {
-    type: 'list', name: 'option', message: 'Select an option', choices: choices}
+    type: 'list', name: 'option', message: 'Select an option', choices}
   )
   const { option } = await inquirer.prompt(menu);
   return option;
 }
 
-export const removeRepoMenu = async (repositories) => {
+export const menuRemoveRepository = async (repositories) => {
   console.clear();
   const choices = getChoices(repositories.map(repo => repo.name));
   choices.push(
@@ -34,6 +35,17 @@ export const removeRepoMenu = async (repositories) => {
   );
   const { option } = await inquirer.prompt(menu);
   return option;
+}
+
+export const menuManageRepositories = async () => {
+  console.clear();
+  const choices = getChoices(manageMenuChoices);
+  const menu = getMenuQuestions(
+    {
+      type: 'list', name: 'option', message: 'Select an option', choices}
+  );
+  const { opt } = await inquirer.prompt(menu);
+  return opt;
 }
 
 export const confirmDialog = async (message) => {
@@ -56,8 +68,8 @@ export const readInput = async (message) => {
   return value;
 }
 
-export const pause = async  () => {
-  const menu = { type: 'input', name: 'ok', message: 'Pres ENTER to continue' }
+export const pause = async  (message = 'Press enter to continue') => {
+  const menu = { type: 'input', name: 'ok', message }
   const { ok } = await inquirer.prompt(menu);
   return ok;
 }
