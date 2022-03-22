@@ -21,20 +21,25 @@ export const menuMain = async () => {
 
 export const menuRemoveRepository = async (repositories) => {
   console.clear();
-  const choices = getChoices(repositories.map(repo => repo.name));
+  const choices = repositories.map((repo, index) => {
+    return {
+      value: repo.id,
+      name: `${ index + 1 }. ${ repo.name }`
+    }
+  });
   choices.push(
     {
-      value: repositories.length + 1,
+      value: null,
       name: `${ repositories.length + 1 }. Exit`
     }
   )
   const menu = getMenuQuestions(
     {
-      type: 'list', name: 'option', message: `Select repository`, choices
+      type: 'list', name: 'id', message: `Select repository`, choices
     }
   );
-  const { option } = await inquirer.prompt(menu);
-  return option;
+  const { id } = await inquirer.prompt(menu);
+  return id;
 }
 
 export const menuManageRepositories = async () => {

@@ -2,6 +2,7 @@ import {Repository} from "./repository.model.js";
 import {getData, persistData} from "../utils/storage-handler.util.js";
 import {pause, readInput} from "../utils/menus.util.js";
 import { existsSync } from 'fs';
+import { v4 as uuidv4 } from 'uuid'
 
 export class RepositoryHandler {
   #newRepoMessages = ['Repository name: ', 'Repository path: '];
@@ -29,12 +30,14 @@ export class RepositoryHandler {
       values.push(value);
       index ++;
     }
-    const repository = new Repository(values[0], values[1]);
+    const repository = new Repository(uuidv4(), values[0], values[1]);
     this.repositories.push(repository);
     persistData(this.repositories);
   }
 
-  removeRepository = (index) => {
+  removeRepository = (id) => {
+    const index = this.repositories.findIndex(repo => repo.id === id);
+    if (index === -1) return;
     this.repositories.splice(index, 1);
     persistData(this.repositories);
   }

@@ -34,16 +34,16 @@ const main = async() => {
 }
 
 const handlerRemoveRepo = async () => {
-  let option;
+  let id;
   let ok = false;
   do {
-    option = await menuRemoveRepository(repositoryHandler.repositories);
-    ok = await confirmDialog('Are you sure?');
+    id = await menuRemoveRepository(repositoryHandler.repositories);
+    if (id)
+      ok = await confirmDialog('Are you sure?');
     if (ok) {
-      repositoryHandler.removeRepository(option);
-      option = repositoryHandler.repositories.length;
+      repositoryHandler.removeRepository(id);
     };
-  } while (!ok || option !== repositoryHandler.repositories.length)
+  } while (id && ok)
 }
 
 main().then(() => console.log('Good Bye'));
