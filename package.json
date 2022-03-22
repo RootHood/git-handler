@@ -14,6 +14,13 @@
   },
   "author": "Carles Ramos (RootHood)",
   "license": "ISC",
+  "engines": {
+    "node": ">=8"
+  },
+  "preferGlobal": true,
+  "bin": {
+    "git-handler": "bin/outside"
+  },
   "bugs": {
     "url": "https://github.com/RootHood/git-handler/issues"
   },
