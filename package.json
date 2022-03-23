@@ -19,7 +19,7 @@
   },
   "preferGlobal": true,
   "bin": {
-    "git-handler": "bin/outside"
+    "git-handler": "app.js"
   },
   "bugs": {
     "url": "https://github.com/RootHood/git-handler/issues"
