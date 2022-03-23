@@ -1,6 +1,6 @@
 import { writeFileSync, existsSync, readFileSync } from 'fs'
 
-const path = './storage/repos.json';
+const path = './repos.json';
 
 export const persistData = (data) => {
   const dataJSON = JSON.stringify(data);
