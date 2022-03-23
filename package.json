@@ -19,7 +19,7 @@
   },
   "preferGlobal": true,
   "bin": {
-    "git-handler": "app.js"
+    "git-manager-cli": "app.js"
   },
   "bugs": {
     "url": "https://github.com/RootHood/git-handler/issues"
