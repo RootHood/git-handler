@@ -1,5 +1,5 @@
 {
-  "name": "git-handler",
+  "name": "git-manager-cli",
   "version": "0.0.1",
   "type": "module",
   "description": "Console App to handler git repositories",
