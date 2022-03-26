@@ -72,14 +72,7 @@ export class RepositoryManager {
     let index = 1;
     for (const repo of this.repositories) {
       await executeCommand(`cd ${ repo.path } && git status`).then(result => {
-        console.clear();
-        console.log('*********************************\n');
-        console.log(`Repository: ${ repo.name }`);
-        console.table(`${ result }`);
-        console.log('*********************************\n');
-        result.indexOf(NO_COMMITS) !== -1 ?
-          console.log('NO PENDENT ACTIONS IN THIS REPO\n') :
-          console.log('ATTENTION ACTIONS PENDENTS IN THIS REPO\n');
+        this.printStatusResult(repo, result);
       }).catch(error => {
         console.error(error);
       });
@@ -100,5 +93,16 @@ export class RepositoryManager {
       });
     }
     await pause();
+  }
+
+  printStatusResult(repo, result) {
+    console.clear();
+    console.log('*********************************\n');
+    console.log(`Repository: ${ repo.name }`);
+    console.table(`${ result }`);
+    console.log('*********************************\n');
+    result.indexOf(NO_COMMITS) !== -1 ?
+      console.log('NO PENDENT ACTIONS IN THIS REPO\n') :
+      console.log('ATTENTION!!! ACTIONS PENDENTS IN THIS REPO\n');
   }
 }
