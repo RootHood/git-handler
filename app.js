@@ -6,10 +6,10 @@ import {
   pause,
   menuRemoveRepository,
   menuManageRepositories
-} from "./utils/menus.util.js";
-import {RepositoryHandler} from "./models/repository-handler.model.js";
+} from "./helpers/menus.util.js";
+import {RepositoryManager} from "./services/repository-managment.sevice.js";
 
-const repositoryHandler = new RepositoryHandler();
+const repositoryManager = new RepositoryManager();
 
 const main = async() => {
   let optionSelected;
@@ -17,34 +17,29 @@ const main = async() => {
     optionSelected = await menuMain();
     switch (optionSelected) {
       case 0:
-        repositoryHandler.printRepositories();
+        repositoryManager.printRepositories();
         await pause();
       break;
       case 1:
-        await menuManageRepositories();
-        await pause();
+        const opt = await menuManageRepositories();
+        await handlerMenuManageRepositories(opt);
       break;
       case 2:
-        await repositoryHandler.addRepository();
+        await repositoryManager.addRepository();
       break;
       case 3:
-        await handlerRemoveRepo();
+        await repositoryManager.handlerRemoveRepo();
       break;
     }
   } while (optionSelected !== getMainMenuChoicesLength() - 1)
 }
 
-const handlerRemoveRepo = async () => {
-  let id;
-  let ok = false;
-  do {
-    id = await menuRemoveRepository(repositoryHandler.repositories);
-    if (id)
-      ok = await confirmDialog('Are you sure?');
-    if (ok) {
-      repositoryHandler.removeRepository(id);
-    };
-  } while (id && ok)
+const handlerMenuManageRepositories = async (option) => {
+  switch (option) {
+    case 0:
+      await repositoryManager.checkStatus();
+      break;
+  }
 }
 
 main().then(() => console.log('Good Bye'));

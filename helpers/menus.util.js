@@ -49,8 +49,8 @@ export const menuManageRepositories = async () => {
     {
       type: 'list', name: 'option', message: 'Select an option', choices}
   );
-  const { opt } = await inquirer.prompt(menu);
-  return opt;
+  const { option } = await inquirer.prompt(menu);
+  return option;
 }
 
 export const confirmDialog = async (message) => {
