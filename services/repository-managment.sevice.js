@@ -4,7 +4,7 @@ import {confirmDialog, menuRemoveRepository, pause, readInput} from "../helpers/
 import { existsSync } from 'fs';
 import { v4 as uuidv4 } from 'uuid';
 import {executeCommand} from "../helpers/terminal-manager.util.js";
-import {NO_COMMITS} from "../constants/git-manger.constants.js";
+import {NO_COMMITS, PULL} from "../constants/git-manger.constants.js";
 
 export class RepositoryManager {
   #newRepoMessages = ['Repository name: ', 'Repository path: '];
@@ -85,7 +85,7 @@ export class RepositoryManager {
   changeBranchName = async (reposList) => {
     console.clear();
     for (const repo of reposList) {
-      await executeCommand(`cd ${ repo.path } && git status`).then(result => {
+      await executeCommand(`cd ${ repo.path } && git fetch && git status`).then(result => {
         console.log(`\n\nRepository: ${ repo.name }`);
         console.log(result);
       }).catch(error => {
@@ -101,7 +101,7 @@ export class RepositoryManager {
     console.log(`Repository: ${ repo.name }`);
     console.table(`${ result }`);
     console.log('*********************************\n');
-    result.indexOf(NO_COMMITS) !== -1 ?
+    result.indexOf(NO_COMMITS || PULL) !== -1 ?
       console.log('NO PENDENT ACTIONS IN THIS REPO\n') :
       console.log('ATTENTION!!! ACTIONS PENDENTS IN THIS REPO\n');
   }
