@@ -3,5 +3,6 @@ Git-Manager-Cli is a tool to manage your local git repositories, help you to cha
 delete branches to lots of repos at the same time.
 
 [![npm version](https://img.shields.io/npm/v/git-manager-cli.svg)](https://www.npmjs.com/package/git-manager-cli)
-![ISC-licensed](https://img.shields.io/github/license/derhuerst/git-manager-cli.svg)
+![ISC-licensed](https://img.shields.io/github/license/git-manager-cli/git-manager-cli.svg)
+![ISC-licensed](https://img.shields.io/github/license/derhuerst/terminal-styles.svg)
 ![minimum Node.js version](https://img.shields.io/node/v/git-manager-cli.svg)
