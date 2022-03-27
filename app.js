@@ -15,18 +15,24 @@ const main = async() => {
     optionSelected = await menuMain();
     switch (optionSelected) {
       case 0:
-        repositoryManager.printRepositories();
-        await pause();
+        if (await repositoryManager.existsRepositories()) {
+          repositoryManager.printRepositories();
+          await pause();
+        }
       break;
       case 1:
-        const opt = await menuManageRepositories();
-        await handlerMenuManageRepositories(opt);
+        if (await repositoryManager.existsRepositories()) {
+          const opt = await menuManageRepositories();
+          await handlerMenuManageRepositories(opt);
+        }
       break;
       case 2:
         await repositoryManager.addRepository();
       break;
       case 3:
-        await repositoryManager.removeRepository();
+        if (await repositoryManager.existsRepositories()) {
+          await repositoryManager.removeRepository();
+        }
       break;
     }
   } while (optionSelected !== getMainMenuChoicesLength() - 1)

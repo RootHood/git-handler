@@ -5,6 +5,7 @@ import {
 import { existsSync } from 'fs';
 import { v4 as uuidV4 } from 'uuid';
 import {executeCommand} from "../helpers/terminal-manager.helper.js";
+import {NO_REPOS_MESSAGE} from "../constants/git-manger.constants.js";
 
 export class RepositoryManager {
   #newRepoMessages = ['Repository name: ', 'Repository path: '];
@@ -52,7 +53,7 @@ export class RepositoryManager {
 
   printRepositories = () => {
     if (this.repositories.length === 0) {
-      console.log('No repositories found, press option 3 to add.');
+      console.log(NO_REPOS_MESSAGE);
       return;
     }
     this.repositories.forEach((repo) => {
@@ -94,6 +95,15 @@ export class RepositoryManager {
     if (!result.success) return;
     const branchName = await readInput('Enter branch name');
     await this.#applyChanges(`git branch -d ${ branchName }`, result.data, branchName);
+  }
+
+  existsRepositories = async () => {
+    if (this.repositories.length === 0) {
+      console.log(NO_REPOS_MESSAGE);
+      await pause();
+      return false;
+    }
+    return true;
   }
 
   // PRIVATE FUNCTIONS
@@ -142,8 +152,8 @@ export class RepositoryManager {
   static #printStatusResult(repo, result) {
     console.clear();
     console.log('*********************************\n');
-    console.log(`Repository: ${ repo.name }`);
-    console.table(`${ result }`);
+    console.log(`  Repository: ${ repo.name }`);
+    console.table(`  ${ result }`);
     console.log('*********************************\n');
   }
 }
