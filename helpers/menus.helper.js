@@ -24,6 +24,7 @@ export const menuMain = async () => {
 export const menuManageRepositories = async () => {
   console.clear();
   console.log(MENU.appHeader);
+  console.log(MENU.manageHeader)
   const choices = getChoices(MENU.manageChoices);
   const menu = createMenu(
     {

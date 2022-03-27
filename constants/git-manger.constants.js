@@ -3,6 +3,7 @@ export const MENU = {
   appHeader: `*************************************************
 ***************** ${ 'Git-Handler' } *******************
 *************************************************\n`,
+  manageHeader: `************* ${ 'Manage-Repositories' } ***************\n`,
   mainChoices: ['View all Repositories', 'Manage Repositories',  'Add repository', 'Remove repository', 'Exit'],
   manageChoices: ['Check status', 'Create branches', 'Change branches', 'Delete branches' , 'Exit'],
 }
