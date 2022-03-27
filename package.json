@@ -1,6 +1,6 @@
 {
   "name": "git-manager-cli",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "type": "module",
   "description": "Console App to handler git repositories",
   "main": "app.js",
