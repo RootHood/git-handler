@@ -3,9 +3,11 @@ import {
   getMainMenuChoicesLength,
   menuMain,
   pause,
-  menuManageRepositories, getManageMenuChoicesLength,
+  menuManageRepositories, getManageMenuChoicesLength, confirmDialog,
 } from "./helpers/menus.helper.js";
 import {RepositoryManager} from "./services/repository-managment.sevice.js";
+import {MESSAGES} from "./constants/git-manger.constants.js";
+import chalk from "chalk";
 
 const repositoryManager = new RepositoryManager();
 
@@ -26,7 +28,10 @@ const main = async() => {
         }
       break;
       case 2:
-        await repositoryManager.addRepository();
+        const ok = await confirmDialog(MESSAGES.areYouSure);
+        if (ok) {
+          await repositoryManager.addRepository();
+        }
       break;
       case 3:
         if (await repositoryManager.existsRepositories()) {
@@ -58,4 +63,10 @@ const handlerMenuManageRepositories = async () => {
   } while (opt !== getManageMenuChoicesLength() - 1);
 }
 
-main().then(() => console.log('Good Bye'));
+main().then(() => {
+  console.clear();
+  console.log(chalk.greenBright('\n  Good Bye, thanks for use Git-Manager-Cli!!\n'));
+  setTimeout(() => {
+    console.clear();
+  }, 5000)
+});

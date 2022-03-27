@@ -6,6 +6,7 @@ import { existsSync } from 'fs';
 import { v4 as uuidV4 } from 'uuid';
 import {executeCommand} from "../helpers/terminal-manager.helper.js";
 import {MESSAGES} from "../constants/git-manger.constants.js";
+import chalk from "chalk";
 
 export class RepositoryManager {
   #newRepoMessages = ['Repository name: ', 'Repository path: '];
@@ -44,7 +45,7 @@ export class RepositoryManager {
     do {
       repository = await menuRemoveRepository(this.repositories);
       if (repository)
-        ok = await confirmDialog('Are you sure?');
+        ok = await confirmDialog(MESSAGES.areYouSure);
       if (ok) {
         await this.#remove(repository);
       }
@@ -56,8 +57,9 @@ export class RepositoryManager {
       console.log(MESSAGES.noRepositories);
       return;
     }
+    console.log();
     this.repositories.forEach((repo) => {
-      console.log(`  Name: ${ repo.name }, Path: ${ repo.path }`);
+      console.log(`  ${chalk.blueBright('Name:')} ${ repo.name }, ${ chalk.yellowBright('Path:') } ${ repo.path }\n`);
     });
   }
 
@@ -81,7 +83,7 @@ export class RepositoryManager {
   createBranch = async () => {
     const result = await this.#handlerSelectRepositories(
       'Select repositories',
-      'Can you add new branch in?: '
+      chalk.greenBright('Can you add new branch in?: ')
     );
     if (result && !result.success || !result) return;
     const branchName = await readInput(MESSAGES.branchName);
@@ -94,6 +96,8 @@ export class RepositoryManager {
       'Select repositories',
       'Can you delete branch in?: '
     );
+    const ok = await confirmDialog(MESSAGES.areYouSure);
+    if (!ok) return;
     if (result && !result.success || !result) return;
     const branchName = await readInput(MESSAGES.branchName);
     const command = `git branch -d ${ branchName }`;
@@ -117,7 +121,7 @@ export class RepositoryManager {
     if (repositoriesFiltered.length) {
       let message = confirmMessage;
       repositoriesFiltered.forEach((repo, index) => {
-        message += `${repo.name}${index < repositoriesFiltered.length - 1 ? ', ' : ''}`
+        message += `${ chalk.yellowBright(repo.name) }${index < repositoriesFiltered.length - 1 ? ', ' : ''}`
       });
       message += '.'
       const ok = await confirmDialog(message);
@@ -135,11 +139,18 @@ export class RepositoryManager {
   #executeGitCommands = async (repositories, command, branchName) => {
     console.clear();
     let index = 1;
+    let canContinue = true;
     for (const repo of repositories) {
+      if (!canContinue) {
+        return;
+      }
       await executeCommand(`cd ${ repo.path } && ${ command }`).then(result => {
         RepositoryManager.#printStatusResult(repo, result);
       }).catch(() => {
-        console.log(`  \nERROR: Changes has not applied, branch ${ branchName } not exists\n`);
+        console.log(
+          chalk.redBright(`\n  ERROR: Changes has not applied, branch ${ chalk.yellowBright(branchName) } not exists\n`)
+        );
+        canContinue = false;
       });
       if (index < repositories.length) await pause(); // TODO: Pause in each repo?
       index++;
@@ -150,8 +161,8 @@ export class RepositoryManager {
   static #printStatusResult(repo, result) {
     console.clear();
     console.log('*********************************\n');
-    console.log(`  Repository: ${ repo.name }`);
-    console.table(`  ${ result }`);
+    console.log(`  ${ chalk.blueBright('Repository:') } ${ chalk.yellowBright(repo.name) }`);
+    console.table(`  ${ chalk.yellow(result) }`);
     console.log('*********************************\n');
   }
 }

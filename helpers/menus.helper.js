@@ -1,5 +1,6 @@
 import inquirer from 'inquirer'
-import {MENU} from "../constants/git-manger.constants.js";
+import {MENU, MESSAGES} from "../constants/git-manger.constants.js";
+import chalk from "chalk";
 
 /**
  * App main menu
@@ -11,7 +12,7 @@ export const menuMain = async () => {
   const choices = getChoices(MENU.mainChoices);
   const menu = createMenu(
     {
-    type: 'list', name: 'option', message: 'Select an option', choices}
+    type: 'list', name: 'option', message: MESSAGES.selectOption, choices}
   )
   const { option } = await inquirer.prompt(menu);
   return option;
@@ -23,12 +24,11 @@ export const menuMain = async () => {
  */
 export const menuManageRepositories = async () => {
   console.clear();
-  console.log(MENU.appHeader);
   console.log(MENU.manageHeader)
   const choices = getChoices(MENU.manageChoices);
   const menu = createMenu(
     {
-      type: 'list', name: 'option', message: 'Select an option', choices}
+      type: 'list', name: 'option', message: MESSAGES.selectOption, choices}
   );
   const { option } = await inquirer.prompt(menu);
   return option;
@@ -147,13 +147,13 @@ const getRepositoriesChoices = (repositories) => {
   const choices = repositories.map((repo, index) => {
     return {
       value: repo,
-      name: `${ index + 1 }. ${ repo.name }`
+      name: `${ index + 1 }. ${ chalk.yellowBright(repo.name) }`
     }
   });
   choices.push(
     {
       value: null,
-      name: `${ repositories.length + 1 }. Exit`
+      name: `${ repositories.length + 1 }. ${ chalk.blueBright('Exit') }`
     }
   );
   return choices;
