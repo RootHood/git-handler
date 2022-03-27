@@ -14,5 +14,6 @@ export const STORAGE = {
 
 // MESSAGES
 export const MESSAGES = {
-  noRepositories: '\n  NO REPOSITORIES FUNDED select option 3 to ADD\n',
+  noRepositories: '\n  NO REPOSITORIES FOUND!!' + 'select option 3 to ADD\n',
+  branchName: 'Branch name:'
 }

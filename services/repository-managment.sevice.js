@@ -73,7 +73,7 @@ export class RepositoryManager {
       'Can you change branch in?: '
     );
     if (result && !result.success || !result) return;
-    const branchName = await readInput('Enter branch name');
+    const branchName = await readInput(MESSAGES.branchName);
     const command = `git checkout ${ branchName }`;
     await this.#executeGitCommands(result.data, command, branchName);
   }
@@ -84,7 +84,7 @@ export class RepositoryManager {
       'Can you add new branch in?: '
     );
     if (result && !result.success || !result) return;
-    const branchName = await readInput('Enter branch name');
+    const branchName = await readInput(MESSAGES.branchName);
     const command = `git checkout -b ${ branchName }`;
     await this.#executeGitCommands(result.data, command, branchName);
   }
@@ -95,7 +95,7 @@ export class RepositoryManager {
       'Can you delete branch in?: '
     );
     if (result && !result.success || !result) return;
-    const branchName = await readInput('Enter branch name');
+    const branchName = await readInput(MESSAGES.branchName);
     const command = `git branch -d ${ branchName }`;
     await this.#executeGitCommands(result.data, command, branchName);
   }
