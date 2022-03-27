@@ -15,8 +15,16 @@
   "author": "Carles Ramos (RootHood)",
   "license": "ISC",
   "engines": {
-    "node": ">=8"
+    "node": ">=12"
   },
+  "keywords": [
+    "git",
+    "manager",
+    "terminal",
+    "shell",
+    "terminal",
+    "cli"
+  ],
   "preferGlobal": true,
   "bin": {
     "git-manager-cli": "app.js"
