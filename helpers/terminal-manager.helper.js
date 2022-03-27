@@ -8,10 +8,10 @@ export const executeCommand = (command) => {
         return;
       }
       if (stderr) {
-        reject(stderr);
+        resolve(stderr);
         return;
       }
       resolve(stdout);
     });
-  })
+  });
 }

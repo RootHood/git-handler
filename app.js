@@ -1,12 +1,10 @@
 #!/usr/bin/env node
 import {
-  confirmDialog,
   getMainMenuChoicesLength,
   menuMain,
   pause,
-  menuRemoveRepository,
-  menuManageRepositories
-} from "./helpers/menus.util.js";
+  menuManageRepositories,
+} from "./helpers/menus.helper.js";
 import {RepositoryManager} from "./services/repository-managment.sevice.js";
 
 const repositoryManager = new RepositoryManager();
@@ -28,7 +26,7 @@ const main = async() => {
         await repositoryManager.addRepository();
       break;
       case 3:
-        await repositoryManager.handlerRemoveRepo();
+        await repositoryManager.removeRepository();
       break;
     }
   } while (optionSelected !== getMainMenuChoicesLength() - 1)
@@ -39,6 +37,15 @@ const handlerMenuManageRepositories = async (option) => {
     case 0:
       await repositoryManager.checkStatus();
       break;
+    case 1:
+      await repositoryManager.createBranch();
+    break;
+    case 2:
+      await repositoryManager.changeBranchName();
+    break;
+    case 3:
+      await repositoryManager.deleteBranch();
+    break;
   }
 }
 

@@ -1,10 +1,10 @@
 import {Repository} from "../models/repository.model.js";
-import {getData, persistData} from "../helpers/storage-manager.util.js";
-import {confirmDialog, menuRemoveRepository, pause, readInput} from "../helpers/menus.util.js";
+import {getData, persistData} from "../helpers/storage-manager.helper.js";
+import {
+  confirmDialog, menuCheckboxRepositories, menuRemoveRepository, pause, readInput} from "../helpers/menus.helper.js";
 import { existsSync } from 'fs';
-import { v4 as uuidv4 } from 'uuid';
-import {executeCommand} from "../helpers/terminal-manager.util.js";
-import {NO_COMMITS, PULL} from "../constants/git-manger.constants.js";
+import { v4 as uuidV4 } from 'uuid';
+import {executeCommand} from "../helpers/terminal-manager.helper.js";
 
 export class RepositoryManager {
   #newRepoMessages = ['Repository name: ', 'Repository path: '];
@@ -32,29 +32,22 @@ export class RepositoryManager {
       values.push(value);
       index ++;
     }
-    const repository = new Repository(uuidv4(), values[0], values[1]);
+    const repository = new Repository(uuidV4(), values[0], values[1]);
     this.repositories.push(repository);
     persistData(this.repositories);
   }
 
-  handlerRemoveRepo = async () => {
-    let id;
+  removeRepository = async () => {
+    let repository;
     let ok = false;
     do {
-      id = await menuRemoveRepository(this.repositories);
-      if (id)
+      repository = await menuRemoveRepository(this.repositories);
+      if (repository)
         ok = await confirmDialog('Are you sure?');
       if (ok) {
-        await this.removeRepository(id);
-      };
-    } while (id && ok)
-  }
-
-  removeRepository = (id) => {
-    const index = this.repositories.findIndex(repo => repo.id === id);
-    if (index === -1) return;
-    this.repositories.splice(index, 1);
-    persistData(this.repositories);
+        await this.#remove(repository);
+      }
+    } while (repository && ok)
   }
 
   printRepositories = () => {
@@ -69,40 +62,88 @@ export class RepositoryManager {
 
   checkStatus = async () => {
     console.clear();
-    let index = 1;
-    for (const repo of this.repositories) {
-      await executeCommand(`cd ${ repo.path } && git status`).then(result => {
-        this.printStatusResult(repo, result);
-      }).catch(error => {
-        console.error(error);
+    const command = 'git status';
+    await this.#executeGitCommands(this.repositories, command);
+  }
+
+  changeBranchName = async () => {
+    const result = await this.#handlerSelectRepositories(
+      'Select repositories to change branch',
+      'Can you change branch in?: '
+    );
+    if (!result.success) return;
+    const branchName = await readInput('Enter branch name');
+    await this.#applyChanges(`git checkout ${ branchName }`, result.data, branchName);
+  }
+
+  createBranch = async () => {
+    const result = await this.#handlerSelectRepositories(
+      'Select repositories',
+      'Can you add new branch in?: '
+    );
+    if (!result.success) return;
+    const branchName = await readInput('Enter branch name');
+    await this.#applyChanges(`git checkout -b ${ branchName }`, result.data, branchName);
+  }
+
+  deleteBranch = async () => {
+    const result = await this.#handlerSelectRepositories(
+      'Select repositories',
+      'Can you delete branch in?: '
+    );
+    if (!result.success) return;
+    const branchName = await readInput('Enter branch name');
+    await this.#applyChanges(`git branch -d ${ branchName }`, result.data, branchName);
+  }
+
+  // PRIVATE FUNCTIONS
+
+  #handlerSelectRepositories = async (menuMessage, confirmMessage) => {
+    const repositories = await menuCheckboxRepositories(this.repositories, menuMessage);
+    const repositoriesFiltered = repositories.filter(id => id);
+    if (repositoriesFiltered.length) {
+      let message = confirmMessage;
+      repositoriesFiltered.forEach((repo, index) => {
+        message += `${repo.name}${index < repositoriesFiltered.length - 1 ? ', ' : ''}`
       });
-      if (index < this.repositories.length) await pause(); // TODO: Pause in each repo?
+      message += '.'
+      const ok = await confirmDialog(message);
+      return { success: ok, data: repositoriesFiltered };
+    }
+  }
+
+  #remove = (repository) => {
+    const index = this.repositories.findIndex(repo => repo === repository);
+    if (index === -1) return;
+    this.repositories.splice(index, 1);
+    persistData(this.repositories);
+  }
+
+  #applyChanges = async (command, repositories, branchName) => {
+    console.clear();
+    await this.#executeGitCommands(repositories, command, branchName);
+  }
+
+  #executeGitCommands = async (repositories, command, branchName) => {
+    console.clear();
+    let index = 1;
+    for (const repo of repositories) {
+      await executeCommand(`cd ${ repo.path } && ${ command }`).then(result => {
+        RepositoryManager.#printStatusResult(repo, result);
+      }).catch(() => {
+        console.log(`  \nERROR: Changes has not applied, branch ${ branchName } not exists\n`);
+      });
+      if (index < repositories.length) await pause(); // TODO: Pause in each repo?
       index++;
     }
     await pause();
   }
 
-  changeBranchName = async (reposList) => {
-    console.clear();
-    for (const repo of reposList) {
-      await executeCommand(`cd ${ repo.path } && git fetch && git status`).then(result => {
-        console.log(`\n\nRepository: ${ repo.name }`);
-        console.log(result);
-      }).catch(error => {
-        console.error(error);
-      });
-    }
-    await pause();
-  }
-
-  printStatusResult(repo, result) {
+  static #printStatusResult(repo, result) {
     console.clear();
     console.log('*********************************\n');
     console.log(`Repository: ${ repo.name }`);
     console.table(`${ result }`);
     console.log('*********************************\n');
-    result.indexOf(NO_COMMITS || PULL) !== -1 ?
-      console.log('NO PENDENT ACTIONS IN THIS REPO\n') :
-      console.log('ATTENTION!!! ACTIONS PENDENTS IN THIS REPO\n');
   }
 }
