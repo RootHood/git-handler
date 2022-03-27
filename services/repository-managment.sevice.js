@@ -5,7 +5,7 @@ import {
 import { existsSync } from 'fs';
 import { v4 as uuidV4 } from 'uuid';
 import {executeCommand} from "../helpers/terminal-manager.helper.js";
-import {NO_REPOS_MESSAGE} from "../constants/git-manger.constants.js";
+import {MESSAGES} from "../constants/git-manger.constants.js";
 
 export class RepositoryManager {
   #newRepoMessages = ['Repository name: ', 'Repository path: '];
@@ -53,7 +53,7 @@ export class RepositoryManager {
 
   printRepositories = () => {
     if (this.repositories.length === 0) {
-      console.log(NO_REPOS_MESSAGE);
+      console.log(MESSAGES.noRepositories);
       return;
     }
     this.repositories.forEach((repo) => {
@@ -72,9 +72,10 @@ export class RepositoryManager {
       'Select repositories to change branch',
       'Can you change branch in?: '
     );
-    if (!result.success) return;
+    if (result && !result.success || !result) return;
     const branchName = await readInput('Enter branch name');
-    await this.#applyChanges(`git checkout ${ branchName }`, result.data, branchName);
+    const command = `git checkout ${ branchName }`;
+    await this.#executeGitCommands(result.data, command, branchName);
   }
 
   createBranch = async () => {
@@ -82,9 +83,10 @@ export class RepositoryManager {
       'Select repositories',
       'Can you add new branch in?: '
     );
-    if (!result.success) return;
+    if (result && !result.success || !result) return;
     const branchName = await readInput('Enter branch name');
-    await this.#applyChanges(`git checkout -b ${ branchName }`, result.data, branchName);
+    const command = `git checkout -b ${ branchName }`;
+    await this.#executeGitCommands(result.data, command, branchName);
   }
 
   deleteBranch = async () => {
@@ -92,14 +94,15 @@ export class RepositoryManager {
       'Select repositories',
       'Can you delete branch in?: '
     );
-    if (!result.success) return;
+    if (result && !result.success || !result) return;
     const branchName = await readInput('Enter branch name');
-    await this.#applyChanges(`git branch -d ${ branchName }`, result.data, branchName);
+    const command = `git branch -d ${ branchName }`;
+    await this.#executeGitCommands(result.data, command, branchName);
   }
 
   existsRepositories = async () => {
     if (this.repositories.length === 0) {
-      console.log(NO_REPOS_MESSAGE);
+      console.log(MESSAGES.noRepositories);
       await pause();
       return false;
     }
@@ -127,11 +130,6 @@ export class RepositoryManager {
     if (index === -1) return;
     this.repositories.splice(index, 1);
     persistData(this.repositories);
-  }
-
-  #applyChanges = async (command, repositories, branchName) => {
-    console.clear();
-    await this.#executeGitCommands(repositories, command, branchName);
   }
 
   #executeGitCommands = async (repositories, command, branchName) => {

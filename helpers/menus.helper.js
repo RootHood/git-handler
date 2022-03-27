@@ -1,11 +1,5 @@
 import inquirer from 'inquirer'
-
-const mainMenuChoices = ['View all Repositories', 'Manage Repositories',  'Add repository', 'Remove repository', 'Exit'];
-const manageMenuChoices = ['Check status', 'Create branches', 'Change branches', 'Delete branches' , 'Exit']
-const mainMenuHeader =
-  `*************************************************
-***************** ${ 'Git-Handler' } *******************
-*************************************************`
+import {MENU} from "../constants/git-manger.constants.js";
 
 /**
  * App main menu
@@ -13,8 +7,8 @@ const mainMenuHeader =
  */
 export const menuMain = async () => {
   console.clear();
-  console.log(mainMenuHeader);
-  const choices = getChoices(mainMenuChoices);
+  console.log(MENU.appHeader);
+  const choices = getChoices(MENU.mainChoices);
   const menu = createMenu(
     {
     type: 'list', name: 'option', message: 'Select an option', choices}
@@ -29,8 +23,8 @@ export const menuMain = async () => {
  */
 export const menuManageRepositories = async () => {
   console.clear();
-  console.log(mainMenuHeader);
-  const choices = getChoices(manageMenuChoices);
+  console.log(MENU.appHeader);
+  const choices = getChoices(MENU.manageChoices);
   const menu = createMenu(
     {
       type: 'list', name: 'option', message: 'Select an option', choices}
@@ -46,7 +40,7 @@ export const menuManageRepositories = async () => {
  */
 export const menuRemoveRepository = async (repositories) => {
   console.clear();
-  console.log(mainMenuHeader);
+  console.log(MENU.appHeader);
   const choices = getRepositoriesChoices(repositories);
   const menu = createMenu(
     {
@@ -65,7 +59,7 @@ export const menuRemoveRepository = async (repositories) => {
  */
 export const menuCheckboxRepositories = async (repositories, message) => {
   console.clear();
-  console.log(mainMenuHeader);
+  console.log(MENU.appHeader);
   const choices = getRepositoriesChoices(repositories);
   const menu = createMenu(
     {
@@ -122,7 +116,11 @@ export const pause = async  (message = 'Press enter to continue') => {
  * @returns {number}
  */
 export const getMainMenuChoicesLength = () => {
-  return mainMenuChoices.length
+  return MENU.mainChoices.length;
+}
+
+export const getManageMenuChoicesLength = () => {
+  return MENU.manageChoices.length;
 }
 
 /**

@@ -2,7 +2,7 @@
   "name": "git-manager-cli",
   "version": "0.0.5",
   "type": "module",
-  "description": "Console App to handler git repositories",
+  "description": "Console App to manage git repositories",
   "main": "app.js",
   "scripts": {
     "test": "test",

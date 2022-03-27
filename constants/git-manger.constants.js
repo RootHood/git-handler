@@ -1,9 +1,17 @@
-// FILES
-export const STORAGE_PATH = './repos.json';
+// MENU
+export const MENU = {
+  appHeader: `*************************************************
+***************** ${ 'Git-Handler' } *******************
+*************************************************\n`,
+  mainChoices: ['View all Repositories', 'Manage Repositories',  'Add repository', 'Remove repository', 'Exit'],
+  manageChoices: ['Check status', 'Create branches', 'Change branches', 'Delete branches' , 'Exit'],
+}
+// STORAGE
+export const STORAGE = {
+  path: './repos.json',
+}
 
 // MESSAGES
-export const NO_REPOS_MESSAGE = '\n  NO REPOSITORIES FUNDED select option 3 to ADD\n';
-
-// GIT
-export const NO_COMMITS = 'nothing to commit, working tree clean';
-export const PULL = 'Your branch and \'origin/develop\' have diverged';
+export const MESSAGES = {
+  noRepositories: '\n  NO REPOSITORIES FUNDED select option 3 to ADD\n',
+}

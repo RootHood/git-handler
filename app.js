@@ -3,7 +3,7 @@ import {
   getMainMenuChoicesLength,
   menuMain,
   pause,
-  menuManageRepositories,
+  menuManageRepositories, getManageMenuChoicesLength,
 } from "./helpers/menus.helper.js";
 import {RepositoryManager} from "./services/repository-managment.sevice.js";
 
@@ -22,8 +22,7 @@ const main = async() => {
       break;
       case 1:
         if (await repositoryManager.existsRepositories()) {
-          const opt = await menuManageRepositories();
-          await handlerMenuManageRepositories(opt);
+          await handlerMenuManageRepositories();
         }
       break;
       case 2:
@@ -38,21 +37,25 @@ const main = async() => {
   } while (optionSelected !== getMainMenuChoicesLength() - 1)
 }
 
-const handlerMenuManageRepositories = async (option) => {
-  switch (option) {
-    case 0:
-      await repositoryManager.checkStatus();
-      break;
-    case 1:
-      await repositoryManager.createBranch();
-    break;
-    case 2:
-      await repositoryManager.changeBranchName();
-    break;
-    case 3:
-      await repositoryManager.deleteBranch();
-    break;
-  }
+const handlerMenuManageRepositories = async () => {
+  let opt;
+  do {
+    opt = await menuManageRepositories();
+    switch (opt) {
+      case 0:
+        await repositoryManager.checkStatus();
+        break;
+      case 1:
+        await repositoryManager.createBranch();
+        break;
+      case 2:
+        await repositoryManager.changeBranchName();
+        break;
+      case 3:
+        await repositoryManager.deleteBranch();
+        break;
+    }
+  } while (opt !== getManageMenuChoicesLength() - 1);
 }
 
 main().then(() => console.log('Good Bye'));
