@@ -65,7 +65,7 @@ const handlerMenuManageRepositories = async () => {
 
 main().then(() => {
   console.clear();
-  console.log(chalk.greenBright('\n  Good Bye, thanks for use Git-Manager-Cli!!\n'));
+  console.log(chalk.greenBright('\n  Good Bye, thanks for used Git-Manager-Cli!!\n'));
   setTimeout(() => {
     console.clear();
   }, 5000)

@@ -8,6 +8,7 @@ import {executeCommand} from "../helpers/terminal-manager.helper.js";
 import {MESSAGES} from "../constants/git-manger.constants.js";
 import chalk from "chalk";
 
+// noinspection JSMethodCanBeStatic
 export class RepositoryManager {
   #newRepoMessages = ['Repository name: ', 'Repository path: '];
   repositories = [];
@@ -77,7 +78,7 @@ export class RepositoryManager {
     if (result && !result.success || !result) return;
     const branchName = await readInput(MESSAGES.branchName);
     const command = `git checkout ${ branchName }`;
-    await this.#executeGitCommands(result.data, command, branchName);
+    await this.#executeGitCommands(result.data, command);
   }
 
   createBranch = async () => {
@@ -88,7 +89,7 @@ export class RepositoryManager {
     if (result && !result.success || !result) return;
     const branchName = await readInput(MESSAGES.branchName);
     const command = `git checkout -b ${ branchName }`;
-    await this.#executeGitCommands(result.data, command, branchName);
+    await this.#executeGitCommands(result.data, command);
   }
 
   deleteBranch = async () => {
@@ -101,7 +102,7 @@ export class RepositoryManager {
     if (result && !result.success || !result) return;
     const branchName = await readInput(MESSAGES.branchName);
     const command = `git branch -d ${ branchName }`;
-    await this.#executeGitCommands(result.data, command, branchName);
+    await this.#executeGitCommands(result.data, command);
   }
 
   existsRepositories = async () => {
@@ -136,7 +137,7 @@ export class RepositoryManager {
     persistData(this.repositories);
   }
 
-  #executeGitCommands = async (repositories, command, branchName) => {
+  #executeGitCommands = async (repositories, command) => {
     console.clear();
     let index = 1;
     let canContinue = true;
@@ -145,10 +146,10 @@ export class RepositoryManager {
         return;
       }
       await executeCommand(`cd ${ repo.path } && ${ command }`).then(result => {
-        RepositoryManager.#printStatusResult(repo, result);
-      }).catch(() => {
+        this.#printStatusResult(repo, result);
+      }).catch((error) => {
         console.log(
-          chalk.redBright(`\n  ERROR: Changes has not applied, branch ${ chalk.yellowBright(branchName) } not exists\n`)
+          chalk.redBright(`\n  ERROR: ${ chalk.yellowBright(error) }\n`)
         );
         canContinue = false;
       });
@@ -158,7 +159,7 @@ export class RepositoryManager {
     await pause();
   }
 
-  static #printStatusResult(repo, result) {
+  #printStatusResult(repo, result) {
     console.clear();
     console.log('*********************************\n');
     console.log(`  ${ chalk.blueBright('Repository:') } ${ chalk.yellowBright(repo.name) }`);
