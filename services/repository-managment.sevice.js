@@ -159,7 +159,7 @@ export class RepositoryManager {
     await pause();
   }
 
-  #printStatusResult(repo, result) {
+  #printStatusResult = (repo, result) => {
     console.clear();
     console.log('*********************************\n');
     console.log(`  ${ chalk.blueBright('Repository:') } ${ chalk.yellowBright(repo.name) }`);
