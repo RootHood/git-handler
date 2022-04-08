@@ -1,4 +1,5 @@
 import chalk from "chalk";
+import * as path from 'path';
 
 // MENU
 export const MENU = {
@@ -15,7 +16,7 @@ export const MENU = {
 }
 // STORAGE
 export const STORAGE = {
-  path: './repos.json',
+  path: `${ path.resolve() }/repos.json`,
 }
 
 // MESSAGES
